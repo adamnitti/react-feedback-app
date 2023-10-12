@@ -10,15 +10,15 @@ function FeedbackForm() {
     const [btnDisabled, setBtnDisabled] = useState(true);
     const [message, setMessage] = useState('');
 
-    const { addFeedback, feedbackEdit } = useContext(FeedbackContext);
+    const { addFeedback, feedbackEdit, updateFeedback } = useContext(FeedbackContext);
 
     useEffect(() => {
         if (feedbackEdit.edit === true) {
-            console.log({feedbackEdit})
+            console.log({ feedbackEdit })
             setBtnDisabled(false)
             setText(feedbackEdit.item.text)
             setRating(feedbackEdit.item.rating)
-        } 
+        }
     }, [feedbackEdit])
 
     const handleTextChange = (e) => {
@@ -43,7 +43,13 @@ function FeedbackForm() {
                 text,
                 rating,
             };
-            addFeedback(newFeedback);
+
+            if (feedbackEdit.edit === true) {
+                updateFeedback(feedbackEdit.item.id, newFeedback)
+            } else {
+                addFeedback(newFeedback)
+            }
+
 
             setText('');
         }
@@ -53,8 +59,7 @@ function FeedbackForm() {
         <Card>
             <form onSubmit={handleSubmit}>
                 <h2>How would you rate your service with us?</h2>
-                {feedbackEdit.edit === true && <RatingSelect select={feedbackEdit.item.rating} />}
-                <RatingSelect select={(rating) => setRating(rating)} />
+                <RatingSelect select={setRating} selected={rating} />
                 <div className='input-group'>
                     <input
                         onChange={handleTextChange}
